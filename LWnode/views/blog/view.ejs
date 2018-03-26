@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Blog Template for Bootstrap</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/blog.css" rel="stylesheet">
+
+    <style media="screen">
+      .nav-right{
+        margin-top: 2px;
+      }
+      .blog-main{
+        min-height: 600px;
+      }
+      .blog-main h1{
+        text-align: center;
+      }
+      .essay-main{
+        border: none;
+      }
+      .essay-meta{
+        text-align: center;
+      }
+      .row{
+        padding-top: 50px;
+      }
+      .glyphicon{
+        padding-right: 5px;
+      }
+      .comments-form{
+        padding-bottom: 20px;
+      }
+      .comments-form h3{
+        padding-bottom: 20px;
+      }
+      .comments-form textarea,.comments-form input{
+        width: 100%;
+        border-radius:5px;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="blog-masthead">
+      <div class="container">
+        <nav class="blog-nav">
+          <a class="blog-nav-item" href="/">首页</a>
+          <a class="blog-nav-item" href="/essay/view">文章</a>
+          <a class="blog-nav-item" href="/about">关于</a>
+          <form class="navbar-right">
+            <button type="button" class="btn btn-default btn-ms nav-right" data-toggle="modal" data-target="#myModal-1">登录</button>
+            <button type="button" class="btn btn-default btn-ms nav-right" data-toggle="modal" data-target="#myModal-2">注册</button>
+          </form>
+        </nav>
+      </div>
+    </div>
+    <div class="container">
+        <div class="row">
+          <div class="col-sm-8 blog-main">
+            <h1><%=essays.title%></h1>
+            <div class="essay-meta">
+              <span> <i class="glyphicon glyphicon-calendar"></i><%=moment(essays.created).format('YY-MM-DD')%></span>
+              <span> <i class="glyphicon glyphicon-pencil"></i><%=essays.author.name%></span>
+              <span> <i class="glyphicon glyphicon-th-list"></i><a href="http://localhost:3000/category/<%=essays.category.slug%>"><%=essays.category.slug%></a></span>
+              <span> <a href="#comments-form"><i class="glyphicon glyphicon-comment"></i><%=essays.comments.length || 0%></a></span>
+              <span> <a href="http://localhost:3000/essay/favorite/<%=essays._id%>"><i class="glyphicon glyphicon-heart"></i><%=essays.meta.favorite || 0  %></a></span>
+            </div>
+            <div class="essay-main">
+              <div class="essay-content">
+                <p class="js-essay-content_post"><%=essays.content%></p>
+              </div>
+            </div>
+            <div class="essay-comments" id="comments-form">
+              <h3>用户评论区</h3>
+              <%if (essays.comments.length) {%>
+                  <div class="comments-list">
+                    <%for (var i = 0;i < essays.comments.length; i++) { %>
+                      <p class="comments-list-email">邮箱：<%=essays.comments[i].email %></p>
+                      <p class="comments-list-content">评论：<%=essays.comments[i].content %></p>
+                    <%}%>
+                  </div>
+              <%} else {%>
+                <p class="alert alert-info">还没有评论</p>
+              <%}%>
+              <div class="comments-form" >
+                <h3>添加评论</h3>
+                <div class="form-group">
+                  <label for="email">邮箱</label>
+                  <input type="text" name="email" class="comments-email" placeholder="请输入邮箱">
+                </div>
+                <div class="comments-form">
+                  <label for="content">评论</label>
+                  <textarea rows='3' cols='10' name="content" class="commentsP" placeholder="请输入评论"></textarea>
+                  <button type="button" name="button" class="btn btn-primary comments-button">提交评论</button>
+                </div>
+              </div>
+            </div>
+        </div><!-- /.blog-main -->
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-module">
+            <h4>分类</h4>
+            <ol class="list-unstyled">
+              <%for (var i = 0; i < categories.length; i++) { %>
+                <li><a href="http://localhost:3000/category/<%=categories[i].slug%>"><%=categories[i].slug%></a></li>
+              <%}%>
+            </ol>
+          </div>
+          <div class="sidebar-module">
+            <h4>Elsewhere</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">GitHub</a></li>
+              <li><a href="#">Twitter</a></li>
+              <li><a href="#">Facebook</a></li>
+            </ol>
+          </div>
+        </div><!-- /.blog-sidebar -->
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+    <footer class="blog-footer">
+      <p>Blog built by <a href="https://github.com/zxza">@zxza</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+    <!-- 注册弹窗 -->
+    <div class="modal fade" id="myModal-2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">注册</h4>
+          </div>
+          <div class="modal-body">
+            <form action="/checkregister" method="get" class='form-input'>
+              <div class="form-group">
+               <label for="exampleInputEmail1">Username</label>
+               <input type="text" class="form-control" id="js-register-username" placeholder="username"  name="username" >
+              </div>
+              <div class="form-group">
+               <label for="exampleInputPassword1">Password</label>
+               <input type="password" class="form-control" id="js-register-password" placeholder="Password" name="password" >
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id='register' class="btn btn-primary">注册</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 登录弹窗 -->
+    <div class="modal fade" id="myModal-1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">登录</h4>
+          </div>
+          <div class="modal-body">
+            <form action="/checklogin" method="get" class='form-input'>
+              <div class="form-group">
+               <label for="exampleInputEmail1">Username</label>
+               <input type="text" class="form-control" id="" placeholder="username"  name="username" >
+              </div>
+              <div class="form-group">
+               <label for="exampleInputPassword1">Password</label>
+               <input type="password" class="form-control" id="" placeholder="Password" name="password" >
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">登录</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script type="text/template" id="moban">
+    </script>
+
+    <script src="/js/jquery-1.11.3.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/underscore-noflect.js"></script>
+    <script type="text/javascript">
+    // //文章缩略
+    // if($('.js-essay-content_post').text().length>150){
+    //
+    //   $('.js-essay-content_post').text($('.js-essay-content_post').text().substr(0,150) + '...')
+    // }
+    //分页
+    //当前页面指向的active
+    function chooseActive(i){
+      $('.blog-nav-item').siblings().removeClass('active');
+      $('.blog-nav-item').eq(i).addClass('active');
+    }
+    var compiled = _.template($("#moban").html());
+    if (window.location.pathname == '/about') {
+      chooseActive(2)
+    } else if (window.location.pathname == '/essay/view') {
+      chooseActive(1)
+    } else {
+      chooseActive(0)
+    }
+
+    // $('.blog-nav-item').click(function () {
+    //   $('.blog-nav-item').siblings().removeClass('active');
+    //   $(this).addClass('active');
+    // })
+    $('#myModal-1 #myModal-2').click(function(){
+        modal()
+      }
+    );
+
+    $('.comments-button').click(function() {
+      console.log(1111)
+      $.get('/essay/comments/<%=essays._id%>',{
+        'email' : $('.comments-email').val(),
+        'content': $('.commentsP').val()
+      },function(reslut) {
+        window.location = "/essay/comments/<%=essays._id%>";
+      })
+    });
+
+
+    $('#register').click(function() {
+      $.get('/checkregister',{
+          "username" : $("#js-register-username").val(),
+          "password" : $("#js-register-password").val()
+        },function(result) {
+          if(result == "1"){
+              //注册成功
+              alert("注册成功！将自动跳转");
+              window.location = "/";
+          }else if(result == "-1"){
+              $("#cuowukuang").fadeIn();
+              $("#cuowukuang").html("用户名不存在");
+          }
+        }
+      )
+    });
+
+    </script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+  </body>
+</html>

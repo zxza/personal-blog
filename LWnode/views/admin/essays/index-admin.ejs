@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Dashboard Template for Bootstrap</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="/css/dashboard.css" rel="stylesheet">
+
+  </head>
+  <style media="screen">
+    h4{
+      display: inline;
+      font-size: 14px;
+      margin: 5px 5px 5px 0;
+    }
+    .navbar-right h4{
+      font-size: 12px;
+      margin: 0;
+    }
+    td{
+      align: center !important;
+    }
+  </style>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">钟文智博客系统</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><h4 class="glyphicon glyphicon-user"></h4>注销</a></li>
+            <li><a href="#"><h4 class="glyphicon glyphicon-flag"></h4>帮助</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar blog-nav-item">
+            <li class="active"><a  href="/admin"><h4 class="glyphicon glyphicon-file"></h4>文章列表  <span class="sr-only">(current)</span></a></li>
+            <li><a href="/admin/essay/add"><h4 class="glyphicon glyphicon-pencil"></h4>添加文章</a></li>
+            <li><a href="/admin/category"><h4 class="glyphicon glyphicon-th-list"></h4>分类列表</a></li>
+            <li><a href="/admin/category/add"><h4 class="glyphicon glyphicon-plus"></h4>添加分类</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href=""><h4 class="glyphicon glyphicon-lock"></h4>修改密码</a></li>
+          </ul>
+        </div>
+          <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">钟文智博客后台</h1>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>
+                    <%if (sortpar == 'title') {%>
+                      <%if (sortEassy[sortpar] == 'desc') {%>
+                        <a href="/admin/?page=<%=pageNum%>&sortpar=title&sortdir=asc"><i class="glyphicon glyphicon-menu-up"></i>标题</a>
+                      <%} else{%>
+                        <a href="/admin/?page=<%=pageNum%>&sortpar=title&sortdir=desc"><i class="glyphicon glyphicon-menu-down"></i>标题</a>
+                      <%}%>
+                    <%} else{ %>
+                      <a href="/admin/?page=<%=pageNum%>&sortpar=title&sortdir=desc">标题</a>
+                    <%}%>
+                    </th>
+                    <th>
+                      <%if (sortpar == 'author') {%>
+                        <%if (sortEassy[sortpar] == 'desc') {%>
+                          <a href="/admin/?page=<%=pageNum%>&sortpar=author&sortdir=asc"><i class="glyphicon glyphicon-menu-up"></i>作者</a>
+                        <%} else{%>
+                          <a href="/admin/?page=<%=pageNum%>&sortpar=author&sortdir=desc"><i class="glyphicon glyphicon-menu-down"></i>作者</a>
+                        <%}%>
+                      <%} else{ %>
+                        <a href="/admin/?page=<%=pageNum%>&sortpar=author&sortdir=desc">作者</a>
+                      <%}%>
+                    </th>
+                    <th><%if (sortpar == 'category') {%>
+                        <%if (sortEassy[sortpar] == 'desc') {%>
+                          <a href="/admin/?page=<%=pageNum%>&sortpar=category&sortdir=asc"><i class="glyphicon glyphicon-menu-up"></i>分类</a>
+                        <%} else{%>
+                          <a href="/admin/?page=<%=pageNum%>&sortpar=category&sortdir=desc"><i class="glyphicon glyphicon-menu-down"></i>分类</a>
+                        <%}%>
+                      <%} else{ %>
+                        <a href="/admin/?page=<%=pageNum%>&sortpar=category&sortdir=desc">分类</a>
+                      <%}%></th>
+                    <th><%if (sortpar == 'published') {%>
+                        <%if (sortEassy[sortpar] == 'desc') {%>
+                          <a href="/admin/?page=<%=pageNum%>&sortpar=published&sortdir=asc"><i class="glyphicon glyphicon-menu-up"></i>状态</a>
+                        <%} else{%>
+                          <a href="/admin/?page=<%=pageNum%>&sortpar=published&sortdir=desc"><i class="glyphicon glyphicon-menu-down"></i>状态</a>
+                        <%}%>
+                      <%} else{ %>
+                        <a href="/admin/?page=<%=pageNum%>&sortpar=published&sortdir=desc">状态</a>
+                      <%}%></th>
+                    <th><%if (sortpar == 'created') {%>
+                        <%if (sortEassy[sortpar] == 'desc') {%>
+                          <a href="/admin/?page=<%=pageNum%>&sortpar=created&sortdir=asc"><i class="glyphicon glyphicon-menu-up"></i>添加时间</a>
+                        <%} else{%>
+                          <a href="/admin/?page=<%=pageNum%>&sortpar=created&sortdir=desc"><i class="glyphicon glyphicon-menu-down"></i>添加时间</a>
+                        <%}%>
+                      <%} else{ %>
+                        <a href="/admin/?page=<%=pageNum%>&sortpar=created&sortdir=desc">添加时间</a>
+                      <%}%></th>
+                    <th>被赞</th>
+                    <th>评论</th>
+                    <th>管理</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%for(var i = 0 ; i < essays.length ; i++){%>
+                    <tr>
+                      <td><a href="/essay/view/<%=essays[i]._id %>"><%=essays[i].title%></a></td>
+                      <td><%=essays[i].author.name%></a></td>
+                      <td><a href="http://localhost:3000/category/<%=essays[i].category.slug%>"><%=essays[i].category.slug%></td>
+                      <td><%=essays[i].published ? '已发布' : '未发布'%></td>
+                      <td><%=moment(essays[i].created).format('YY-MM-DD')%></td>
+                      <td><%=essays[i].meta.favorates || 0%></td>
+                      <td><%=essays[i].comments.length || 0%></td>
+                      <td>
+                        <a href="/essay/view/<%=essays[i]._id %>"><button type="button" name="button" class="btn btn-sm btn-success">查看</button></a>
+                        <a href="/admin/edit/<%=essays[i]._id %>"><button type="button" name="button" class="btn btn-sm btn-info">编辑</button></a>
+                        <a href="/admin/delete/<%=essays[i]._id %>"><button type="button" name="button" class="btn btn-sm btn-danger">删除</button></a>
+                      </td>
+                    </tr>
+                  <%}%>
+                </tbody>
+              </table>
+            </div>
+            <nav aria-label="Page navigation">
+            <ul class="pagination">
+              <% var currentPage = 1%>
+              <%if(pageNum==1){%>
+                  <li class="hidden"><a href="javascript:void(0)">&laquo;</a></li>
+               <%}else{%>
+                  <%if(totalCount==0){%>
+                   <li class="hidden"><a href="javascript:void(0)">&laquo;</a></li>
+                  <%}else{%>
+                   <li><a href="/admin/?page=<%=(pageNum -1)%>&sortpar=<%=sortpar%>&sortdir=<%=sortEassy[sortpar]%>">&laquo;</a></li>
+                  <%}%>
+               <%}%>
+              <%for(var i = 0; i < pageCount ; i++) {%>
+                  <%if (currentPage === pageNum) { %>
+                    <li class="active"><a href="/admin/?page=<%=(i + 1)%>&sortpar=<%=sortpar%>&sortdir=<%=sortEassy[sortpar]%>"><%= (i + 1) %></a></li>
+                  <%} else {%>
+                    <li><a href="/admin/?page=<%=(i + 1)%>&sortpar=<%=sortpar%>&sortdir=<%=sortEassy[sortpar]%>"><%= (i + 1) %></a></li>
+                  <% }%>
+                  <% currentPage++ %>
+              <%}%>
+              <%if(pageNum==pageCount){%>
+                  <li class="hidden"><a href="javascript:void(0)">&raquo;</a></li>
+               <%}else{%>
+                  <%if(totalCount==0){%>
+                   <li class="hidden"><a href="javascript:void(0)">&raquo;</a></li>
+                  <%}else{%>
+                   <li><a href="/admin/?page=<%=(pageNum + 1)%>&sortpar=<%=sortpar%>&sortdir=<%=sortEassy[sortpar]%>">&raquo;</a></li>
+                  <%}%>
+               <%}%>
+            </ul>
+          </nav>
+          </div>
+        </div>
+    </div>
+  </body>
+  <script src="/js/jquery-1.11.3.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/underscore-noflect.js"></script>
+  <script type="text/javascript">
+    function chooseActive(i){
+      $('.blog-nav-item').children().removeClass('active');
+      $('.blog-nav-item').children().eq(i).addClass('active');
+    }
+    // var compiled = _.template($("#moban").html());
+    if (window.location.pathname == '/admin/') {
+      chooseActive(0)
+    } else if (window.location.pathname == '/admin/essay/add') {
+      chooseActive(1)
+    } else if (window.location.pathname == '/admin/category/') {
+      chooseActive(2)
+    } else {
+      chooseActive(3)
+    }
+  </script>
+</html>
