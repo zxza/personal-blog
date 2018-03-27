@@ -44,17 +44,30 @@ exports.showAdmin = function (req, res, next) {
         'moment': moment
     });
   })
+
 }
 
 exports.showDelete = function (req, res, next) {
+  console.log(req.params)
   essayModel.remove({_id: req.params.id}).exec(function (err, essays) {
     if(err) return next(err);
     // return res.jsonp(essays);
     console.log('文章删除成功');
+    // res.redirect('/admin');
+    return;
+  });
+
+  categoryModel.remove({_id: req.params.id}).exec(function (err, category) {
+    if(err) return next(err);
+    // return res.jsonp(essays);
+    console.log('类别删除成功');
     console.log(req.params);
-    res.redirect('/admin');
+    res.redirect('/admin/category');
+    return;
   })
-};
+}
+
+
 
 exports.showCategory = function (req, res, next) {
   res.render("admin/category/index", {
@@ -70,6 +83,11 @@ exports.showCategoryAdd = function (req, res, next) {
 
 exports.PostCategoryAdd = function (req, res, next) {
   var list = req.query.category;
+  console.log(list)
+  if (list == '') {
+    //填写为空
+    res.send('-1');
+  }
     categoryModel.findOne({},function(err, category) {
       if(err) {
         return next(err);
@@ -85,15 +103,17 @@ exports.PostCategoryAdd = function (req, res, next) {
         if(err) {
           return next(err);
         }
-        console.log('分类保存成功');
+        res.send('1');
       })
     })
-
 };
 
 exports.CategoryEdit = function(req, res, next) {
+
+  var editId = req.params.id
+  console.log(editId)
   categoryModel.findOne({_id: req.params.id}).exec(function (err, category) {
-    if(!req.params.id) return next(new Error('no post id provided'));
+    // if(!req.params.id) return next(new Error('no post id provided'));
     res.render("admin/category/edit", {
       'category' : category
     });
@@ -116,6 +136,7 @@ exports.PostCategoryEdit = function(req, res, next) {
     })
   })
 }
+
 
 //展示文章添加
 exports.showAdminAdd = function (req, res, next) {
@@ -155,7 +176,6 @@ exports.PostAdminAdd = function (req, res, next) {
     })
 
   })
-
 };
 
 exports.showcategory = function (req, res, next) {
@@ -204,7 +224,13 @@ exports.showComments = function (req, res, next) {
 
 }
 
+exports.showRegister = function(req, res, next) {
+  res.render('admin/register')
+}
 
+exports.showLogin = function(req, res, next) {
+  res.render('admin/login')
+}
 
 exports.checkregister = function (req, res, next) {
   var filedUsername = req.query.username;
@@ -221,6 +247,7 @@ exports.checkregister = function (req, res, next) {
       }
       res.send("1");
   });
+  next();
 }
 
 exports.checklogin = function (req, res, next) {
@@ -240,4 +267,5 @@ exports.checklogin = function (req, res, next) {
           res.send("密码错误！");
       }
   })
+  next();
 }

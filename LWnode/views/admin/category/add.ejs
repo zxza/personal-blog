@@ -97,7 +97,7 @@
       chooseActive(3)
     }
 
-    //提交编辑文章
+    //分类添加
     $('#form-sumbit').click(function() {
       var category = $('#input-title').val();
       console.log(category)
@@ -106,7 +106,12 @@
           category: category
         },
         function(data){
-          console.log(11)
+          console.log(data);
+          if (data == -1) {
+            alert('要记得输入分类呀')
+          } else if (data == 1) {
+            alert('分类保存成功')
+          }
         }
       );
     })

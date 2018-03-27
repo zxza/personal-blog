@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客登录</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing: border-box;
+        }
+        body{
+            background-color: #fff;
+        }
+        .content{
+            width:1000px;
+            height: 500px;
+            margin:0 auto;
+            background-color: #fff;
+        }
+        .details {
+            padding:50px 50px 0;
+        }
+        .details .item{
+            width:400px;
+            margin:20px auto;
+            position: relative;
+        }
+        .item  label{
+            font-size: 16px;
+            position: absolute;
+            left:2px;
+            bottom:10px;
+            font-family: "宋体";
+            color:#777;
+            cursor: text;
+        }
+        .item input{
+            padding-top: 35px;
+            width:400px;
+            height: 80px;
+            font-size: 20px;
+            border:none;
+            outline: none;
+            border-bottom: 1px solid #c3c3c3;
+        }
+        .item .bottom-line{
+            position: absolute;
+            width: 0;
+            height: 2px;
+            left:0;
+            bottom: -1px;
+            background-color: red;
+        }
+        .content  {
+          text-align: center;
+        }
+
+        .content .confirm{
+          text-align: center;
+          width: 100px;
+          height: 40px;
+          line-height: 40px;
+          margin-top: 30px;
+          background-color: #007cba;
+          color: #fff;
+          font-size: 16px;
+          border-radius: 8px;
+          cursor: pointer;
+          margin-right: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="content">
+                <div class="details">
+                  <div class="title">
+                    欢迎来到zxza博客登录页面
+                  </div>
+                    <div class="item">
+                        <label for="item-firsthev">用户名</label>
+                        <input id="item-firsthev" type="text">
+                        <div class="bottom-line"></div>
+                    </div>
+                    <div class="item">
+                        <label for="next-hev">密码</label>
+                        <input id="next-hev" type="password">
+                        <div class="bottom-line"></div>
+                    </div>
+                  <button type="button" class="confirm" name="button">前往注册</button>
+                  <button type="button" class="confirm" name="button">登录</button>
+                </div>
+        </div>
+    </div>
+    <script src="/js/jquery-1.11.3.min.js"></script>
+    <script>
+        ////输入框获得焦点时
+        $("input").focus(function(event) {
+            //label动态上升，升至顶部
+             $(this).siblings("label").stop().animate({"bottom": "50px"}, 500);
+             //div模拟的下边框伸出，其width动态改变至input的width
+             $(this).next(".bottom-line").stop().animate({"width": "400px"}, 500);
+        });
+        ////输入框失去焦点时
+        $("input").blur(function(event) {
+             //label动态下降，恢复原位
+             if ($('#item-firsthev').val() == '' &&  $('#next-hev').val() == '') {
+              $(this).siblings("label").stop().animate({bottom: "10px"}, 500);
+            } else {
+              return ;
+            }
+
+             //用div模拟的下边框缩回，其width动态恢复为默认宽度0
+             $(this).next(".bottom-line").stop().animate({"width": "0"}, 500);
+        });
+    </script>
+</body>
+</html>

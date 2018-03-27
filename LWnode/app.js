@@ -63,6 +63,8 @@ app.get("/category/edit/:id",admin.CategoryEdit)
 app.post("/category/edit/:id",admin.PostCategoryEdit)
 app.get("/admin/edit/:id",admin.showEdit);
 app.get("/admin/save/:id",admin.saveEdit);
+app.get('/register',admin.showRegister);
+app.get('/login',admin.showLogin);
 // app.get("/edit/:id", admin.showEdit);
 // app.get("/admin", admin.showAdmin);
 // app.get("/admin", admin.showAdmin);
