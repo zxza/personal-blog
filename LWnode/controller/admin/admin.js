@@ -65,12 +65,10 @@ exports.showAdmin = function (req, res, next) {
 
 exports.LoginOut = function(req, res, next) {
   req.session.login = 0;
-  console.log(req.session.login);
   res.redirect('/admin');
 }
 
 exports.showDelete = function (req, res, next) {
-  console.log(req.params)
   essayModel.remove({_id: req.params.id}).exec(function (err, essays) {
     if(err) return next(err);
     // return res.jsonp(essays);
@@ -92,54 +90,102 @@ exports.showDelete = function (req, res, next) {
 
 
 exports.showCategory = function (req, res, next) {
-  res.render("admin/category/index", {
-    'moment': moment
-  });
+  if (req.session.login == "1") {
+      //登陆了
+      var username = req.session.username;
+      var login = true;
+  } else {
+    //没有登陆
+    res.redirect('/register');
+    return ;
+    var username = "";  //制定一个空用户名
+    var login = false;
+  }
+  userModel.findOne({name : username}, function(err, result) {
+    res.render("admin/category/index", {
+      'moment': moment,
+      'username': username,
+      'login': login
+    });
+  })
 };
 
 
 exports.showCategoryAdd = function (req, res, next) {
-  res.render("admin/category/add", {
-  });
+  if (req.session.login == "1") {
+      //登陆了
+      var username = req.session.username;
+      var login = true;
+  } else {
+    //没有登陆
+    res.redirect('/register');
+    return ;
+    var username = "";  //制定一个空用户名
+    var login = false;
+  }
+  userModel.findOne({name : username}, function(err, result) {
+    res.render("admin/category/add", {
+      'username': username,
+      'login': login
+    });
+  })
+
 };
 
 exports.PostCategoryAdd = function (req, res, next) {
-  var list = req.query.category;
-  console.log(list)
-  if (list == '') {
-    //填写为空
-    res.send('-1');
-  }
-    categoryModel.findOne({},function(err, category) {
-      if(err) {
-        return next(err);
-      }
-
-      var category = new categoryModel({
-        name: list,
-        created: new Date(),
-        slug: list
-      })
-
-      category.save(function(err, category) {
+  userModel.findOne({name : username}, function(err, result) {
+    var list = req.query.category;
+    if (list == '') {
+      //填写为空
+      res.send('-1');
+    }
+      categoryModel.findOne({},function(err, category) {
         if(err) {
           return next(err);
         }
-        res.send('1');
+
+        var category = new categoryModel({
+          name: list,
+          created: new Date(),
+          slug: list
+        })
+
+        category.save(function(err, category) {
+          if(err) {
+            return next(err);
+          }
+          res.send('1');
+        })
       })
-    })
+  })
+
 };
 
 exports.CategoryEdit = function(req, res, next) {
-
-  var editId = req.params.id
-  console.log(editId)
-  categoryModel.findOne({_id: req.params.id}).exec(function (err, category) {
-    // if(!req.params.id) return next(new Error('no post id provided'));
-    res.render("admin/category/edit", {
-      'category' : category
-    });
+  if (req.session.login == "1") {
+      //登陆了
+      var username = req.session.username;
+      var login = true;
+  } else {
+    //没有登陆
+    res.redirect('/register');
+    return ;
+    var username = "";  //制定一个空用户名
+    var login = false;
+  }
+  userModel.findOne({name : username}, function(err, result) {
+    var editId = req.params.id
+    console.log(editId)
+    categoryModel.findOne({_id: req.params.id}).exec(function (err, category) {
+      // if(!req.params.id) return next(new Error('no post id provided'));
+      res.render("admin/category/edit", {
+        'category' : category,
+        'username' : username,
+        'login' : login
+      });
+    })
   })
+
 }
 
 
@@ -213,8 +259,25 @@ exports.PostLogin = function(req, res, next) {
 
 //展示文章添加
 exports.showAdminAdd = function (req, res, next) {
+  if (req.session.login == "1") {
+      //登陆了
+      var username = req.session.username;
+      var login = true;
+  } else {
+    //没有登陆
+    res.redirect('/register');
+    return ;
+    var username = "";  //制定一个空用户名
+    var login = false;
+  }
+  userModel.findOne({name : username}, function(err, result) {
     res.render("admin/essays/add",{
+      'login': login,
+      'username': username
     });
+  })
+
+
 };
 //文章添加数据库保存
 exports.PostAdminAdd = function (req, res, next) {
@@ -251,9 +314,6 @@ exports.PostAdminAdd = function (req, res, next) {
   })
 };
 
-exports.showcategory = function (req, res, next) {
-
-};
 
 exports.saveEdit = function(req, res, next) {
   var title = req.query.title;
@@ -280,22 +340,30 @@ exports.saveEdit = function(req, res, next) {
 }
 
 exports.showEdit = function (req, res, next) {
-  essayModel.findOne({_id: req.params.id}).populate('author').populate('category').exec(function (err, essays) {
-    if(!req.params.id) return next(new Error('no post id provided'));
-    res.render("admin/essays/edit", {
-        'essays': essays
-    });
+  if (req.session.login == "1") {
+      //登陆了
+      var username = req.session.username;
+      var login = true;
+  } else {
+    //没有登陆
+    res.redirect('/register');
+    return ;
+    var username = "";  //制定一个空用户名
+    var login = false;
+  }
+  userModel.findOne({name : username}, function(err, result) {
+    essayModel.findOne({_id: req.params.id}).populate('author').populate('category').exec(function (err, essays) {
+      if(!req.params.id) return next(new Error('no post id provided'));
+      res.render("admin/essays/edit", {
+          'essays': essays,
+          'login' : login,
+          'username': username
+      });
+    })
   })
-}
-
-
-exports.showFavorite = function (req, res, next) {
 
 }
 
-exports.showComments = function (req, res, next) {
-
-}
 
 exports.showRegister = function(req, res, next) {
   res.render('admin/register')
@@ -305,41 +373,3 @@ exports.showRegister = function(req, res, next) {
 exports.showLogin = function(req, res, next) {
   res.render('admin/login')
 }
-
-// exports.checkregister = function (req, res, next) {
-//   var filedUsername = req.query.username;
-//   var filedPassword = req.query.password;
-//   db.find("tests",{"username":filedUsername,"password":filedPassword},function(err,result){
-//       if(err){
-//           res.send("-3");  //服务器错误
-//           return;
-//       }
-//
-//       if (result.length != 0) {
-//           res.send("-1"); //被占用
-//           return;
-//       }
-//       res.send("1");
-//   });
-//   next();
-// }
-//
-// exports.checklogin = function (req, res, next) {
-//   var tianxiedeusername = req.query.username;
-//   var tianxiedepassword = req.query.password;
-//   db.find("tests",{"username":tianxiedeusername},function(err,result){
-//       if(result.length == 0){
-//           res.send("你的登录名写错了，没有这个注册用户");
-//           return;
-//       }
-//       var shujukuzhongdepassword = result[0].password;
-//       if(shujukuzhongdepassword == tianxiedepassword){
-//           // req.session.login = "1";
-//           // req.session.username = result[0].username;
-//           res.send("成功登陆！你是" + result[0].username);
-//       }else{
-//           res.send("密码错误！");
-//       }
-//   })
-//   next();
-// }
