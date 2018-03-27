@@ -56,7 +56,7 @@
           text-align: center;
         }
 
-        .content .confirm{
+        .content .confirm,.content .login{
           text-align: center;
           width: 100px;
           height: 40px;
@@ -80,17 +80,17 @@
                     欢迎来到zxza博客登录页面
                   </div>
                     <div class="item">
-                        <label for="item-firsthev">用户名</label>
-                        <input id="item-firsthev" type="text">
+                        <label for="username">用户名</label>
+                        <input id="username" type="text">
                         <div class="bottom-line"></div>
                     </div>
                     <div class="item">
-                        <label for="next-hev">密码</label>
-                        <input id="next-hev" type="password">
+                        <label for="password">密码</label>
+                        <input id="password" type="password">
                         <div class="bottom-line"></div>
                     </div>
                   <button type="button" class="confirm" name="button">前往注册</button>
-                  <button type="button" class="confirm" name="button">登录</button>
+                  <button type="button" class="login" name="button">登录</button>
                 </div>
         </div>
     </div>
@@ -106,7 +106,7 @@
         ////输入框失去焦点时
         $("input").blur(function(event) {
              //label动态下降，恢复原位
-             if ($('#item-firsthev').val() == '' &&  $('#next-hev').val() == '') {
+             if ($('#username').val() == '' &&  $('#password').val() == '') {
               $(this).siblings("label").stop().animate({bottom: "10px"}, 500);
             } else {
               return ;
@@ -115,6 +115,30 @@
              //用div模拟的下边框缩回，其width动态恢复为默认宽度0
              $(this).next(".bottom-line").stop().animate({"width": "0"}, 500);
         });
+
+        //登陆动作
+        $('.login').click(function() {
+          console.log(11)
+          var Username = $('#username').val();
+          var Password = $('#password').val();
+          $.post("/login",
+            {
+              Username: Username,
+              Password: Password
+            },
+            function(data){
+              console.log(data);
+              if (data == -2) {
+                alert('服务器出错啦')
+              } else if (data == '-1') {
+                alert('密码错误')
+              } else {
+                alert('恭喜登陆成功')
+                window.location = '/admin';
+              }
+            }
+          );
+        })
     </script>
 </body>
 </html>

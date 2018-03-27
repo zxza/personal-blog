@@ -2,49 +2,71 @@ var express = require("express");
 var app = express();
 var formidable = require('formidable');
 var db = require("../.././model/db.js");
+var md5 = require("../.././model/md5.js");
 var essayModel = require('../.././model/essay.js');
 var userModel = require('../.././model/user.js');
 var categoryModel = require('../.././model/category.js');
 var moment = require('moment');
 
-
 exports.showAdmin = function (req, res, next) {
-  var sortpar = req.query.sortpar ? req.query.sortpar : 'title';
-  var sortdir = req.query.sortdir ? req.query.sortdir : 'desc';
-
-  if (['title', 'category', 'author', 'created', 'published'].indexOf(sortpar) === -1) {
-    sortpar = 'title';
+  if (req.session.login == "1") {
+      //登陆了
+      var username = req.session.username;
+      var login = true;
+  } else {
+    //没有登陆
+    res.redirect('/register');
+    return ;
+    var username = "";  //制定一个空用户名
+    var login = false;
   }
-  if (['desc', 'asc'].indexOf(sortdir) === -1) {
-    sortdir = 'desc'
-  }
 
-  var sortEassy = {};
-  sortEassy[sortpar] = sortdir;
+  userModel.findOne({name : username}, function(err, result) {
+    var sortpar = req.query.sortpar ? req.query.sortpar : 'title';
+    var sortdir = req.query.sortdir ? req.query.sortdir : 'desc';
 
-  essayModel.find({}).sort(sortEassy).populate('author').populate('category').exec(function (err, essays) {
-    if(err) return next(err);
-    var pageNum = Math.abs(parseInt(req.query.page || 1, 10)) ;
-    var pageSize = 4;
+    if (['title', 'category', 'author', 'created', 'published'].indexOf(sortpar) === -1) {
+      sortpar = 'title';
+    }
+    if (['desc', 'asc'].indexOf(sortdir) === -1) {
+      sortdir = 'desc'
+    }
 
-    var totalCount = essays.length;
-    var pageCount = Math.ceil(totalCount / pageSize);
+    var sortEassy = {};
+    sortEassy[sortpar] = sortdir;
 
-     if (pageNum > pageCount) {
-       pageNum = pageCount;
-     }
-    // return res.jsonp(essays);
-    res.render("admin/essays/index-admin", {
-        'sortEassy' : sortEassy,
-        'sortpar' : sortpar,
-        'essays' : essays.slice((pageNum - 1 ) * pageSize, pageNum * pageSize),
-        'totalCount': totalCount,
-        'pageNum' : pageNum,
-        'pageCount': pageCount,
-        'moment': moment
-    });
+    essayModel.find({}).sort(sortEassy).populate('author').populate('category').exec(function (err, essays) {
+      if(err) return next(err);
+      var pageNum = Math.abs(parseInt(req.query.page || 1, 10)) ;
+      var pageSize = 4;
+
+      var totalCount = essays.length;
+      var pageCount = Math.ceil(totalCount / pageSize);
+
+       if (pageNum > pageCount) {
+         pageNum = pageCount;
+       }
+      // return res.jsonp(essays);
+      res.render("admin/essays/index-admin", {
+          'username' : username,
+          'login': login,
+          'sortEassy' : sortEassy,
+          'sortpar' : sortpar,
+          'essays' : essays.slice((pageNum - 1 ) * pageSize, pageNum * pageSize),
+          'totalCount': totalCount,
+          'pageNum' : pageNum,
+          'pageCount': pageCount,
+          'moment': moment
+      });
+    })
   })
 
+}
+
+exports.LoginOut = function(req, res, next) {
+  req.session.login = 0;
+  console.log(req.session.login);
+  res.redirect('/admin');
 }
 
 exports.showDelete = function (req, res, next) {
@@ -136,7 +158,58 @@ exports.PostCategoryEdit = function(req, res, next) {
     })
   })
 }
-
+//注册动作
+exports.PostRegister = function(req, res, next) {
+  var Username = req.body.Username;
+  var Password = req.body.Password;
+  userModel.findOne({name : Username}, function(err, result) {
+    if (err) {
+      res.send('-2'); //服务器错误
+      return;
+    }
+    if (result) {
+      res.send("-1");  //被占用
+      return;
+    }
+    if (!result) {
+      var user = new userModel({
+        name: Username,
+        password: Password,
+        email: '',
+        created: new Date(),
+      })
+      user.save(function(err, user) {
+        if(err) {
+          return next(err);
+        }
+        req.session.login = "1";
+        req.session.username = Username;
+        console.log(req.session)
+        res.send("1"); //注册成功，写入session
+      })
+    }
+  })
+}
+//登陆状态
+exports.PostLogin = function(req, res, next) {
+  var Username = req.body.Username;
+  var Password = req.body.Password;
+  userModel.findOne({name : Username}, function(err, result) {
+    console.log(result.password);
+    var Mpassword = result.password;
+    if (err) {
+      res.send('-2'); //服务器错误
+      return;
+    }
+    if(Mpassword == Password){
+      req.session.login = "1";
+      req.session.username = result.name;
+      res.send('1'); //登陆成功
+    }else{
+      res.send('-1');//密码错误
+    }
+  })
+}
 
 //展示文章添加
 exports.showAdminAdd = function (req, res, next) {
@@ -228,44 +301,45 @@ exports.showRegister = function(req, res, next) {
   res.render('admin/register')
 }
 
+
 exports.showLogin = function(req, res, next) {
   res.render('admin/login')
 }
 
-exports.checkregister = function (req, res, next) {
-  var filedUsername = req.query.username;
-  var filedPassword = req.query.password;
-  db.find("tests",{"username":filedUsername,"password":filedPassword},function(err,result){
-      if(err){
-          res.send("-3");  //服务器错误
-          return;
-      }
-
-      if (result.length != 0) {
-          res.send("-1"); //被占用
-          return;
-      }
-      res.send("1");
-  });
-  next();
-}
-
-exports.checklogin = function (req, res, next) {
-  var tianxiedeusername = req.query.username;
-  var tianxiedepassword = req.query.password;
-  db.find("tests",{"username":tianxiedeusername},function(err,result){
-      if(result.length == 0){
-          res.send("你的登录名写错了，没有这个注册用户");
-          return;
-      }
-      var shujukuzhongdepassword = result[0].password;
-      if(shujukuzhongdepassword == tianxiedepassword){
-          // req.session.login = "1";
-          // req.session.username = result[0].username;
-          res.send("成功登陆！你是" + result[0].username);
-      }else{
-          res.send("密码错误！");
-      }
-  })
-  next();
-}
+// exports.checkregister = function (req, res, next) {
+//   var filedUsername = req.query.username;
+//   var filedPassword = req.query.password;
+//   db.find("tests",{"username":filedUsername,"password":filedPassword},function(err,result){
+//       if(err){
+//           res.send("-3");  //服务器错误
+//           return;
+//       }
+//
+//       if (result.length != 0) {
+//           res.send("-1"); //被占用
+//           return;
+//       }
+//       res.send("1");
+//   });
+//   next();
+// }
+//
+// exports.checklogin = function (req, res, next) {
+//   var tianxiedeusername = req.query.username;
+//   var tianxiedepassword = req.query.password;
+//   db.find("tests",{"username":tianxiedeusername},function(err,result){
+//       if(result.length == 0){
+//           res.send("你的登录名写错了，没有这个注册用户");
+//           return;
+//       }
+//       var shujukuzhongdepassword = result[0].password;
+//       if(shujukuzhongdepassword == tianxiedepassword){
+//           // req.session.login = "1";
+//           // req.session.username = result[0].username;
+//           res.send("成功登陆！你是" + result[0].username);
+//       }else{
+//           res.send("密码错误！");
+//       }
+//   })
+//   next();
+// }

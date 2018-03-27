@@ -68,6 +68,7 @@
           border-radius: 8px;
           cursor: pointer;
           margin-right: 20px;
+          outline: none;
         }
 
     </style>
@@ -89,8 +90,8 @@
                         <input id="next-hev" type="password">
                         <div class="bottom-line"></div>
                     </div>
-                  <button type="button" class="confirm" name="button">注册</button>
-                  <button type="button" class="confirm" name="button">前往登录</button>
+                  <button type="button" class="confirm register" name="button">注册</button>
+                  <a href="/login"><button type="button" class="confirm" name="button">前往登录</button></a>
                 </div>
         </div>
     </div>
@@ -115,6 +116,29 @@
          //用div模拟的下边框缩回，其width动态恢复为默认宽度0
          $(this).next(".bottom-line").stop().animate({"width": "0"}, 500);
     });
+
+    //注册动作
+    $('.register').click(function() {
+      var Username = $('#item-firsthev').val();
+      var Password = $('#next-hev').val();
+      $.post("/register",
+        {
+          Username: Username,
+          Password: Password
+        },
+        function(data){
+          console.log(data);
+          if (data == -2) {
+            alert('服务器出错啦')
+          } else if (data == '-1') {
+            alert('该用户名已经被注册')
+          } else {
+            alert('恭喜注册成功')
+            window.location = '/login';
+          }
+        }
+      );
+    })
     </script>
 </body>
 </html>
