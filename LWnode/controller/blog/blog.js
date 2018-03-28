@@ -113,13 +113,13 @@ exports.showcategory = function (req, res, next) {
 };
 // 展示每篇文章
 exports.showView = function (req, res, next) {
-  essayModel.findOne({id: req.params.id}).populate('author').populate('category').exec(function (err, essays) {
-    var totalCount = essays.length;
+  essayModel.findOne({_id: req.params._id}).populate('author').populate('category').exec(function (err, essays) {
+    // var totalCount = essays.length;
     if(!req.params._id) return next(new Error('no post id provided'));
     // return res.jsonp(essays);
     res.render("blog/view", {
         'essays' : essays,
-        'totalCount': totalCount,
+        // 'totalCount': totalCount,
         'moment': moment
     });
   })
@@ -147,17 +147,24 @@ exports.showComments = function (req, res, next) {
     if (err) {
       return next(err)
     }
+    if (req.query.email == '') {
+      res.send('-1')  //没输入邮箱
+      return;
+    }
+    if (req.query.content == '') {
+      res.send('-2')  //没输入评论内容
+      return ;
+    }
     // return res.jsonp(essays);
     var comment = {
       email : req.query.email,
       content: req.query.content
     }
-    console.log(req.query)
 
     essays.comments.push(comment);
-    essays.markModified('comments');
+    // essays.markModified('comments');
     essays.save(function(err, essays) {
-      res.redirect('/essay/view/' + essays._id);
+      res.send('1');
     })
 
   })

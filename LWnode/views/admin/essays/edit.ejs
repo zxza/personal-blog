@@ -150,13 +150,20 @@
       var title = $('#input-title').val();
       var content = editor.txt.text();
 
-      $.get("/admin/save/"+'<%=essays._id%>',
+      $.post("/admin/save/"+'<%=essays._id%>',
         { categorty: categorty,
           title: title,
           content: content
         },
         function(data){
-          console.log(221)
+          if (data == '-2') {
+            alert('请输入文章内容')
+          } else if (data == '-1') {
+            alert('请输入文章标题')
+          } else {
+            alert('文章修改成功')
+            window.location = '/admin';
+          }
         }
       );
     })

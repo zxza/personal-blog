@@ -73,20 +73,21 @@ exports.showDelete = function (req, res, next) {
     if(err) return next(err);
     // return res.jsonp(essays);
     console.log('文章删除成功');
+    res.redirect('/admin');
     // res.redirect('/admin');
     return;
   });
+}
 
+exports.CategoryDelete = function(req, res, next) {
   categoryModel.remove({_id: req.params.id}).exec(function (err, category) {
     if(err) return next(err);
     // return res.jsonp(essays);
     console.log('类别删除成功');
-    console.log(req.params);
     res.redirect('/admin/category');
     return;
   })
 }
-
 
 
 exports.showCategory = function (req, res, next) {
@@ -133,11 +134,11 @@ exports.showCategoryAdd = function (req, res, next) {
 };
 
 exports.PostCategoryAdd = function (req, res, next) {
-  userModel.findOne({name : username}, function(err, result) {
-    var list = req.query.category;
+    var list = req.body.category;
     if (list == '') {
       //填写为空
       res.send('-1');
+      return ;
     }
       categoryModel.findOne({},function(err, category) {
         if(err) {
@@ -157,7 +158,6 @@ exports.PostCategoryAdd = function (req, res, next) {
           res.send('1');
         })
       })
-  })
 
 };
 
@@ -281,9 +281,18 @@ exports.showAdminAdd = function (req, res, next) {
 };
 //文章添加数据库保存
 exports.PostAdminAdd = function (req, res, next) {
-  var title = req.query.title;
-  var content = req.query.content;
-  var category = req.query.categorty;
+  var title = req.body.title;
+  var content = req.body.content;
+  var category = req.body.categorty;
+
+  if (!title) {
+    res.send('-1');  //没有标题
+    return;
+  }
+  if (!content) {
+    res.send('-2');  //没有文章内容
+    return;
+  }
 
   userModel.findOne({}, function(err, author) {
     categoryModel.findOne({name: category},function(err, category) {
@@ -306,20 +315,28 @@ exports.PostAdminAdd = function (req, res, next) {
         if(err) {
           return next(err);
         }
-        console.log('文章保存成功');
-        res.redirect('/admin');
+        res.send('1') //文章保存成功
       })
     })
 
   })
 };
 
-
 exports.saveEdit = function(req, res, next) {
-  var title = req.query.title;
-  var content = req.query.content;
-  var category = req.query.categorty;
-  console.log(req.params)
+  var title = req.body.title;
+  var content = req.body.content;
+  var category = req.body.categorty;
+  console.log(req.body)
+  if (!title) {
+    res.send('-1');  //没有标题
+    return;
+  }
+  if (!content) {
+    res.send('-2');  //没有文章内容
+    return;
+  }
+
+
 
   essayModel.findOne({_id : req.params.id }, function(err, essay) {
     categoryModel.findOne({name: category},function(err, category) {
@@ -333,7 +350,7 @@ exports.saveEdit = function(req, res, next) {
         if(err) {
           return next(err);
         }
-        console.log('文章保存成功');
+        res.send('1') //文章保存成功
       })
     })
   })

@@ -55,15 +55,16 @@ app.get('/about', blog.showAbout);
 app.get("/",admin.showAdmin);
 app.get("/admin", admin.showAdmin);
 app.get("/admin/essay/add", admin.showAdminAdd);
-app.get("/admin/essay/show", admin.PostAdminAdd);
+app.post("/admin/essay/show", admin.PostAdminAdd);
 app.get("/admin/delete/:id", admin.showDelete);
+app.get("/category/delete/:id", admin.CategoryDelete);
 app.get("/admin/category",admin.showCategory)
 app.get("/admin/category/add",admin.showCategoryAdd)
-app.get("/admin/category/show", admin.PostCategoryAdd);
+app.post("/admin/category/show", admin.PostCategoryAdd);
 app.get("/category/edit/:id",admin.CategoryEdit)
 app.post("/category/edit/:id",admin.PostCategoryEdit)
 app.get("/admin/edit/:id",admin.showEdit);
-app.get("/admin/save/:id",admin.saveEdit);
+app.post("/admin/save/:id",admin.saveEdit);
 app.get('/register',admin.showRegister);
 app.post('/register',admin.PostRegister);
 app.get('/login',admin.showLogin);

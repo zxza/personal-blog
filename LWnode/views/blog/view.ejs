@@ -39,12 +39,16 @@
         padding-bottom: 20px;
       }
       .comments-form h3{
-        padding-bottom: 20px;
+        padding-bottom: 0px;
       }
       .comments-form textarea,.comments-form input{
         width: 100%;
         border-radius:5px;
         outline: none;
+      }
+      .comments-list{
+        margin-bottom: 25px;
+        border-bottom: 1px solid #a4a4a4;
       }
     </style>
   </head>
@@ -130,67 +134,10 @@
         <a href="#">Back to top</a>
       </p>
     </footer>
-    <!-- 注册弹窗 -->
-    <div class="modal fade" id="myModal-2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">注册</h4>
-          </div>
-          <div class="modal-body">
-            <form action="/checkregister" method="get" class='form-input'>
-              <div class="form-group">
-               <label for="exampleInputEmail1">Username</label>
-               <input type="text" class="form-control" id="js-register-username" placeholder="username"  name="username" >
-              </div>
-              <div class="form-group">
-               <label for="exampleInputPassword1">Password</label>
-               <input type="password" class="form-control" id="js-register-password" placeholder="Password" name="password" >
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" id='register' class="btn btn-primary">注册</button>
-          </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- 登录弹窗 -->
-    <div class="modal fade" id="myModal-1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">登录</h4>
-          </div>
-          <div class="modal-body">
-            <form action="/checklogin" method="get" class='form-input'>
-              <div class="form-group">
-               <label for="exampleInputEmail1">Username</label>
-               <input type="text" class="form-control" id="" placeholder="username"  name="username" >
-              </div>
-              <div class="form-group">
-               <label for="exampleInputPassword1">Password</label>
-               <input type="password" class="form-control" id="" placeholder="Password" name="password" >
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">登录</button>
-          </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <script type="text/template" id="moban">
-    </script>
 
     <script src="/js/jquery-1.11.3.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/underscore-noflect.js"></script>
+    <!-- <script type="text/javascript" src="/js/underscore-noflect.js"></script> -->
     <script type="text/javascript">
     // //文章缩略
     // if($('.js-essay-content_post').text().length>150){
@@ -203,7 +150,6 @@
       $('.blog-nav-item').siblings().removeClass('active');
       $('.blog-nav-item').eq(i).addClass('active');
     }
-    var compiled = _.template($("#moban").html());
     if (window.location.pathname == '/about') {
       chooseActive(2)
     } else if (window.location.pathname == '/essay/view') {
@@ -216,38 +162,25 @@
     //   $('.blog-nav-item').siblings().removeClass('active');
     //   $(this).addClass('active');
     // })
-    $('#myModal-1 #myModal-2').click(function(){
-        modal()
-      }
-    );
+
 
     $('.comments-button').click(function() {
-      console.log(1111)
       $.get('/essay/comments/<%=essays._id%>',{
         'email' : $('.comments-email').val(),
         'content': $('.commentsP').val()
-      },function(reslut) {
-        window.location = "/essay/comments/<%=essays._id%>";
+      },function(result) {
+        if (result  == '1') {
+          alert('评论添加成功');
+          window.location = '/essay/view/<%=essays._id%>';
+        } else if (result  == '-1') {
+          alert('请输入邮箱');
+        } else if (result  == '-2') {
+          alert('请输入评论');
+        }
       })
     });
 
 
-    $('#register').click(function() {
-      $.get('/checkregister',{
-          "username" : $("#js-register-username").val(),
-          "password" : $("#js-register-password").val()
-        },function(result) {
-          if(result == "1"){
-              //注册成功
-              alert("注册成功！将自动跳转");
-              window.location = "/";
-          }else if(result == "-1"){
-              $("#cuowukuang").fadeIn();
-              $("#cuowukuang").html("用户名不存在");
-          }
-        }
-      )
-    });
 
     </script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->

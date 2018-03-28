@@ -103,8 +103,7 @@
     //分类添加
     $('#form-sumbit').click(function() {
       var category = $('#input-title').val();
-      console.log(category)
-      $.get("/admin/category/show",
+      $.post("/admin/category/show",
         {
           category: category
         },
