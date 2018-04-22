@@ -44,6 +44,7 @@ app.use(function (req, res, next) {
 //路由跳转
 app.get("/",blog.showIndex);
 app.get("/essay",blog.showEssays);
+app.get("/essay/showSearch",blog.showSearch);
 app.get("/category/:slug",blog.showcategory);
 app.get("/essay/view/:_id",blog.showView);
 app.get("/essay/favorite/:_id",blog.showFavorite);

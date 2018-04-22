@@ -16,7 +16,22 @@
 
     <style media="screen">
       .nav-right{
-        margin-top: 2px;
+        margin-top: 7px;
+        float: right;
+      }
+      .nav-right button{
+        width: 45px;
+        height: 26px;
+        background-color: #007cba;
+        border: 1px solid #fff;
+        font-size: 14px;
+        color: #fff;
+        outline: none;
+        cursor:pointer;
+      }
+      .nav-right input{
+        color: #007cba;
+        outline: none;
       }
     </style>
   </head>
@@ -26,13 +41,11 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item" href="/">首页</a>
-          <a class="blog-nav-item" href="/connect">联系</a>
-          <a class="blog-nav-item" href="/about">关于</a>
-          <!-- <form class="navbar-right">
-            <button type="button" class="btn btn-default btn-ms nav-right" data-toggle="modal" data-target="#myModal-1">登录</button>
-            <button type="button" class="btn btn-default btn-ms nav-right" data-toggle="modal" data-target="#myModal-2">注册</button>
-          </form> -->
+          <a class="blog-nav-item active" href="/">分类</a>
+          <div class="nav-right">
+            <input type="text" name="搜索" value="搜索" class="search">
+            <button type="button" name="button" class="btn-search">搜索</button>
+          </div>
         </nav>
       </div>
     </div>
@@ -107,9 +120,7 @@
           <div class="sidebar-module">
             <h4>Elsewhere</h4>
             <ol class="list-unstyled">
-              <li><a href="#">GitHub</a></li>
-              <li><a href="#">Twitter</a></li>
-              <li><a href="#">Facebook</a></li>
+              <li><a href="https://github.com/zxza">@zxza</a></li>
             </ol>
           </div>
         </div><!-- /.blog-sidebar -->
@@ -199,6 +210,17 @@
     if($('.js-essay-content_post').text().length>150){
       $('.js-essay-content_post').text($('.js-essay-content_post').text().substr(0,150) + '...')
     }
+
+    $('.btn-search').click(function() {
+      var inputVal = $('.search').val();
+        $.get("/essay/showSearch",
+          { input: inputVal,
+          },
+          function(data){
+            $('body').html(data)
+          }
+        );
+      })
     //分页
     // //当前页面指向的active
     // function chooseActive(i){

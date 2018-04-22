@@ -44,7 +44,7 @@
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="/">首页</a>
+          <a class="blog-nav-item active" href="/">搜索结果</a>
           <div class="nav-right">
             <input type="text" name="搜索" value="搜索" class="search">
             <button type="button" name="button" class="btn-search">搜索</button>
@@ -57,7 +57,7 @@
 
     <div class="container">
         <div class="blog-header">
-        <h1><%=essays[0].author.name%>的博客系统,一共<%=totalCount%>篇博文</h1>
+        <h1>搜索结果为：一共<%=totalCount%>篇对应内容的博文</h1>
         <!-- <h1><%= essays%></h1> -->
         </div>
 
@@ -168,9 +168,9 @@
       chooseActive(0)
     }
 
+
     $('.btn-search').click(function() {
       var inputVal = $('.search').val();
-
         $.get("/essay/showSearch",
           { input: inputVal,
           },

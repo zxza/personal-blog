@@ -33,6 +33,34 @@ exports.showEssays = function (req, res, next) {
       });
     })
 };
+
+exports.showSearch = function(req, res, next){
+  var inputVal = req.query.input;
+  var findContent = {};
+  // findContent.content = new RegExp(input,'g');
+
+  essayModel.find({content: new RegExp(inputVal,'g')}).populate('author').populate('category').exec(function (err, essays) {
+    if(err) return next(err);
+    var pageNum = Math.abs(parseInt(req.query.page || 1, 10)) ;
+    var pageSize = 4;
+
+    var totalCount = essays.length;
+    var pageCount = Math.ceil(totalCount / pageSize);
+
+     if (pageNum > pageCount) {
+       pageNum = pageCount;
+     }
+
+    res.render("blog/showSearch", {
+      'title' : '首页',
+      'essays' : essays.slice((pageNum - 1 ) * pageSize, pageNum * pageSize),
+      'totalCount': totalCount,
+      'pageNum' : pageNum,
+      'pageCount': pageCount,
+      'moment': moment
+    });
+  })
+}
 //展示首页联系
 exports.showConnect = function (req, res, next) {
     essayModel.find({published: true}).sort('created').populate('author').populate('category').exec(function (err, essays) {

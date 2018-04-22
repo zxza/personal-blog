@@ -50,19 +50,35 @@
         margin-bottom: 25px;
         border-bottom: 1px solid #a4a4a4;
       }
+      .nav-right{
+        margin-top: 7px;
+        float: right;
+      }
+      .nav-right button{
+        width: 45px;
+        height: 26px;
+        background-color: #007cba;
+        border: 1px solid #fff;
+        font-size: 14px;
+        color: #fff;
+        outline: none;
+        cursor:pointer;
+      }
+      .nav-right input{
+        color: #007cba;
+        outline: none;
+      }
     </style>
   </head>
   <body>
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item" href="/">首页</a>
-          <a class="blog-nav-item" href="/essay/view">文章</a>
-          <a class="blog-nav-item" href="/about">关于</a>
-          <!-- <form class="navbar-right">
-            <button type="button" class="btn btn-default btn-ms nav-right" data-toggle="modal" data-target="#myModal-1">登录</button>
-            <button type="button" class="btn btn-default btn-ms nav-right" data-toggle="modal" data-target="#myModal-2">注册</button>
-          </form> -->
+          <a class="blog-nav-item active" href="/">文章</a>
+          <div class="nav-right">
+            <input type="text" name="搜索" value="搜索" class="search">
+            <button type="button" name="button" class="btn-search">搜索</button>
+          </div>
         </nav>
       </div>
     </div>
@@ -85,10 +101,12 @@
             <div class="essay-comments" id="comments-form">
               <h3>用户评论区</h3>
               <%if (essays.comments.length) {%>
-                  <div class="comments-list">
+                  <div class="">
                     <%for (var i = 0;i < essays.comments.length; i++) { %>
-                      <p class="comments-list-email">邮箱：<%=essays.comments[i].email %></p>
+                      <div class="comments-list">
+                      <p class="comments-list-email">名称：<%=essays.comments[i].email %></p>
                       <p class="comments-list-content">评论：<%=essays.comments[i].content %></p>
+                      </div>
                     <%}%>
                   </div>
               <%} else {%>
@@ -97,7 +115,7 @@
               <div class="comments-form" >
                 <h3>添加评论</h3>
                 <div class="form-group">
-                  <label for="email">邮箱</label>
+                  <label for="email">名称</label>
                   <input type="text" name="email" class="comments-email" placeholder="请输入邮箱">
                 </div>
                 <div class="comments-form">
@@ -120,9 +138,7 @@
           <div class="sidebar-module">
             <h4>Elsewhere</h4>
             <ol class="list-unstyled">
-              <li><a href="#">GitHub</a></li>
-              <li><a href="#">Twitter</a></li>
-              <li><a href="#">Facebook</a></li>
+              <li><a href="https://github.com/zxza">@zxza</a></li>
             </ol>
           </div>
         </div><!-- /.blog-sidebar -->
@@ -180,7 +196,16 @@
       })
     });
 
-
+    $('.btn-search').click(function() {
+      var inputVal = $('.search').val();
+        $.get("/essay/showSearch",
+          { input: inputVal,
+          },
+          function(data){
+            $('body').html(data)
+          }
+        );
+      })
 
     </script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->

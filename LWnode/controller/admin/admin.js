@@ -63,6 +63,8 @@ exports.showAdmin = function (req, res, next) {
 
 }
 
+
+
 exports.LoginOut = function(req, res, next) {
   req.session.login = 0;
   res.redirect('/admin');
@@ -208,6 +210,7 @@ exports.PostCategoryEdit = function(req, res, next) {
 exports.PostRegister = function(req, res, next) {
   var Username = req.body.Username;
   var Password = req.body.Password;
+  Password = md5(md5(Password) + "123");
   userModel.findOne({name : Username}, function(err, result) {
     if (err) {
       res.send('-2'); //服务器错误
@@ -240,6 +243,7 @@ exports.PostRegister = function(req, res, next) {
 exports.PostLogin = function(req, res, next) {
   var Username = req.body.Username;
   var Password = req.body.Password;
+  Password = md5(md5(Password) + "123");
   userModel.findOne({name : Username}, function(err, result) {
     console.log(result.password);
     var Mpassword = result.password;
